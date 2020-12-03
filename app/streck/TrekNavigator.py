@@ -8,6 +8,9 @@ from app.models.shops import Shops
 
 
 class TrekNavigator:
+    """
+    Building routes between stores
+    """
 
     def __init__(self):
         pass
@@ -41,6 +44,9 @@ class TrekNavigator:
 
     @staticmethod
     def get_nearest_shop(shop_name, latitude, longitude):
+        """
+        latitude, longitude - coordinates of the person
+        """
         shops = Shops.select().where(Shops.name == shop_name).order_by(
             (Shops.latitude - latitude) * (Shops.longitude - longitude)
             * (Shops.latitude - latitude) * (Shops.longitude - longitude)).limit(1).execute()
@@ -49,6 +55,10 @@ class TrekNavigator:
 
     @staticmethod
     def get_yandex_url(points: List[Tuple[float, float]]) -> str:
+        """
+        Generate Yandex Map usrl with trek cross `points`
+        points: list of (latitude, longitude)
+        """
         mean_latitude = sum([p[0] for p in points])
         mean_longitude = sum([p[0] for p in points])
         url = f"https://yandex.ru/maps/2/saint-petersburg/?ll={mean_latitude}%2C{mean_longitude}&mode=" \
@@ -61,6 +71,10 @@ class TrekNavigator:
 
     @staticmethod
     def get_fasted_trek(points: List[Tuple[float, float]]) -> Tuple[List[Tuple[float, float]], float]:
+        """
+        Find the best trek between points
+        points: list of (latitude, longitude)
+        """
         import itertools
         best_trek = []
         mlen = 1e9
@@ -77,7 +91,10 @@ class TrekNavigator:
         return best_trek, (mlen / 5) * 60 + (len(points) - 1) * 5
 
     @staticmethod
-    def generate_options(length):
+    def generate_options(length: int) -> List[List[Tuple[float, float]]]:
+        """
+        Generate all available treks with no more then length shops
+        """
         options = []
 
         def add(prefix, min, max, n) -> list:
@@ -96,7 +113,12 @@ class TrekNavigator:
 
         return options
 
-    def generate_traks_for_cart(self, current_geo: Tuple[float, float], cart_list: List[Item]):
+    def generate_traks_for_cart(self, current_geo: Tuple[float, float], cart_list: List[Item]) -> List[dict]:
+        """
+        Generate treks between shops, covering the entire basket
+        current_geo: (latitude, longitude)
+        cart_list: Your goods
+        """
         cart = []
         shops_names = []  # all the possible shops
         for i in cart_list:
@@ -142,7 +164,10 @@ class TrekNavigator:
 
         return trek_options_params
 
-    def genarete_treks_for_cart_list(self, current_geo, cart_list):
+    def genarete_treks_for_cart_list(self, current_geo: Tuple[float, float], cart_list: List[Item]) -> List[dict]:
+        """
+        Find best way for this card
+        """
         treks = self.generate_traks_for_cart(current_geo, cart_list)
         minprice = min([t['price'] for t in treks])
         minduraturation = min([t['duration'] for t in treks])

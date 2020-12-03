@@ -1,15 +1,24 @@
 import re
 from collections import Counter
+from typing import List
+
 import pymorphy2
 from app.models.items import Items
 
 
 class Dictionary:
+    """
+    Parser work with the names of the goods
+    """
 
     def __init__(self):
         self.morph = pymorphy2.MorphAnalyzer()
 
-    def get_similiar_words(self, text):
+    def get_similiar_words(self, text: str) -> List[str]:
+        """
+
+        """
+
         text = re.sub(r'[^а-яa-z\s]+', "", text.replace("\xa0", " ").lower())
         words = re.split(r"\s+", text)
         if len(words) < 2:
@@ -20,7 +29,8 @@ class Dictionary:
         words = [self.morph.parse(w)[0].normal_form for w in words[:-1]]
         local_dictionary = {}
 
-        options = Items.select(Items.keywords, Items.local_dictionary).where(Items.keywords.contains(words)).limit(120).execute()
+        options = Items.select(Items.keywords, Items.local_dictionary).where(Items.keywords.contains(words)).limit(
+            120).execute()
         options_words = []
         for o in options:
             local_dictionary.update(o.local_dictionary)

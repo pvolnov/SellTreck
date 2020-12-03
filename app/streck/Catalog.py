@@ -1,6 +1,7 @@
 import pickle
 import re
 from collections import defaultdict
+from typing import List
 
 from playhouse.shortcuts import model_to_dict
 
@@ -10,7 +11,10 @@ from app.models.items import Items
 class Catalog:
 
     @staticmethod
-    def get_similiar_items(text):
+    def get_similiar_items(text: str) -> List[str]:
+        """
+        Find all similar goods in database
+        """
         words = re.split("\s+", text.replace("\xa0", " ").lower())
         item_names = []
         main_name = None
