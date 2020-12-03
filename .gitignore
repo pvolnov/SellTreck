@@ -1,0 +1,7 @@
+.ipynb_checkpoints
+.idea
+Test.ipynb
+test.py
+__pycache__
+venv
+config.py
