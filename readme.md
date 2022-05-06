@@ -2,10 +2,10 @@
 selltreck API 
 ====
 
-Api для поостроения маршрутов между мазаинами для достижения минимальной суммарной стоимости корзины покупок.
+Api for routing between shopping carts to achieve the minimum total cost of a shopping cart.
 
-`requirements.txt` список зависимостей
+`requirements.txt` list of dependencies
 
-Для запуска выполнить 
+To run it execute 
 
 `venv/bin/uvicorn --host 0.0.0.0 --port 9876 app.main:app`
